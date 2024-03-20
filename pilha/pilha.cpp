@@ -10,10 +10,8 @@ struct Item {
 };
 
 // Imprime as informações de um dado qualquer
-void imprimir_item(const Item& item) {
-    string valor =  to_string(item.valor);
-    string tipo(1,item.tipo);
-    cout << "Nome:" + item.nome + "\n Tipo: " + tipo + "\nValor: " + valor << endl;
+void imprimir_dado(const Item& item) {
+    cout << "Nome: " << item.nome << " Tipo: " << item.tipo << " Valor: " << item.valor << endl;
 }
 
 class Noh {
@@ -22,7 +20,7 @@ class Noh {
         Item nItem;
         Noh* nProx;
     public:
-        Noh(Item meuItem, Noh* proxNo) {
+        Noh(Item meuItem, Noh *proxNo) {
             nItem = meuItem;
             nProx = proxNo;
         }
@@ -50,39 +48,39 @@ class Pilha {
         Noh* mPtTopo;
 };
 
+Pilha::Pilha() {
+    mPtTopo = NULL;
+}
+Pilha::~Pilha() {
 
+}
 void Pilha::Topo() {
     if (this->Vazia()) {
         throw runtime_error("Erro: pilha vazia!");
-    } else {
-        Item item = this->mPtTopo->nItem;
-        string valor =  to_string(item.valor);
-        string tipo(1,item.tipo);
-        cout << "Nome:" + item.nome + "\n Tipo: " + tipo + "\nValor: " + valor << endl;
-    }
+    } 
+    imprimir_dado(mPtTopo->nItem);
 }
 bool Pilha::Vazia() {
-    return this->mPtTopo == NULL;
+    return (!mPtTopo);
 }
 
 Item Pilha::Desempilhar() {
     if (this->Vazia()) {
         throw runtime_error("Erro: pilha vazia!");
-    } else {
-        Item itemAtual = mPtTopo->nItem;
-        Noh* topoAtual = mPtTopo;
-        this->mPtTopo = mPtTopo->nProx;
-        topoAtual->~Pilha();
-        return itemAtual;
     }
+    Item itemAtual = mPtTopo->nItem;
+    Noh* topoAtual = mPtTopo;
+    mPtTopo = mPtTopo->nProx;
+    delete topoAtual;
+    return itemAtual;
 }
 
 void Pilha::Empilhar(const Item& item) {
-    mPtTopo = this->Vazia() ? new Noh(item,NULL) : new Noh(item,mPtTopo->nProx);
+    mPtTopo = this->Vazia() ? new Noh(item,NULL) : new Noh(item,mPtTopo);
 }
 
 void Pilha::LimparTudo() {
-
+     while (!this->Vazia()) this->Desempilhar();
 }
 
 
@@ -117,7 +115,7 @@ int main() {
             cout << e.what() << endl;
         }
     } while (comando != 'f'); // finalizar execução
-    while (not pilha.Vazia()) {
+    while (!pilha.Vazia()) {
         imprimir_dado(pilha.Desempilhar());
     }
     cout << endl;
